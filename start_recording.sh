@@ -48,5 +48,5 @@ echo "Successfully mounted $LARGEST_DEVICE_PATH to $RECORDING_STORAGE_MOUNT_PATH
 cd /home/$USER/dashcam
 
 # start recording video to device
-echo "Starting recording to $RECORDING_STORAGE_MOUNT_PATH/$RUN_TIME.h264"
-rpicam-vid -c dashcam_config.txt -o recording_storage_mount/"${RUN_TIME}".h264
+echo "Starting recording to $RECORDING_STORAGE_MOUNT_PATH/$RUN_TIME-chunk%04d.h264"
+rpicam-vid -c dashcam_config.txt -o recording_storage_mount/"${RUN_TIME}"-chunk%04d.h264
