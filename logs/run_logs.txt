@@ -1,6 +1,0 @@
-2024-09-29 15:03:06 : Could not mount /dev/sda1 to /home/sam/dashcam/recording_storage_mount
-2024-09-29 15:04:21 : Could not mount /dev/sda1 to /home/sam/dashcam/recording_storage_mount
-2024-09-29 15:06:06 : Could not mount /dev/sda1 to /home/sam/dashcam/recording_storage_mount
-2024-09-29 15:07:07 : Could not mount /dev/sda1 to /home/sam/dashcam/recording_storage_mount
-2024-09-29 15:59:49 : Could not find a block device to store video to.
-2024-09-29 16:14:25 : Could not find a block device to store video to.
