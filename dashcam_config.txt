@@ -1,0 +1,6 @@
+timeout=0
+nopreview=
+width=1920
+height=1080
+framerate=30
+bitrate=8000000
