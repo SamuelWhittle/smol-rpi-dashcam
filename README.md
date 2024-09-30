@@ -40,3 +40,5 @@ WARNING: I do not recommend using the FAT32 filesystem as it's maximum file size
 This project is based on `rpicam-apps`. You can view their documentation here: [rpicam-apps docs](https://www.raspberrypi.com/documentation/computers/camera_software.html)
 
 Most `rpicam-apps` options you would want to change can be easily adjusted in `dashcam_config.txt` in the project root.
+
+You can view your Pi Camera Modules Hardware specs here: [Pi Camera Module specs](https://www.raspberrypi.com/documentation/accessories/camera.html#hardware-specification)
