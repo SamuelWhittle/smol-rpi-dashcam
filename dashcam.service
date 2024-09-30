@@ -3,9 +3,10 @@ Description=Start recording a video on boot
 After=multi-user.target
 
 [Service]
-ExecStart=/home/sam/dashcam/start_recording.sh
-StandardOutput=file:/home/sam/dashcam/logs/systemd.log
-StandardError=file:/home/sam/dashcam/logs/systemd.log
+WorkingDirectory=/path/to/working/dir
+ExecStart=/path/to/working/dir/start_recording.sh
+StandardOutput=file:/path/to/working/dir/logs/systemd.log
+StandardError=file:/path/to/working/dir/logs/systemd.log
 
 [Install]
 WantedBy=multi-user.target
