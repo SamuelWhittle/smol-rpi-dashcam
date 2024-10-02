@@ -3,20 +3,25 @@ Dashcam project designed to work on a Raspberry Pi with an accompanying Pi Camer
 
 ## Things You Will Need:
 1. Raspberry Pi
-2. Pi Camera Module
-3. Camera Cable: for plugging camera into Pi
-4. Micro USB cable: for providing power to the Pi from your car
-5. USB OTG cable: for plugging in the flashdrive
+2. MicroSD card: The boot drive
+3. Pi Camera Module
+4. Camera Cable: for plugging camera into Pi
+5. Micro USB cable: for providing power to the Pi from your 5V power adapter
+6. 5V power adapter: for powering the Pi
+7. USB OTG cable: for plugging in the flashdrive
 
 optional (recommended):
 1. Heatsink: The Pi Zero 2 W works well for 1080p30fps video but gets HOT
 
 ## What it Does
-1. Setup a `systemctl` service called `dashcam`  
+1. Setup a `systemctl` service called `dashcam`:  
 The service just runs the `start_recording.sh` script and logs to `logs/systemd.log`
-2. Run on boot:  
-So you can plug the Pi's power directly into your car. When the car turns on and starts providing power to the device it will boot and start recording on it's own. It will stop recording when the Pi loses power. Losing power will not damage the current recording given the default encoding settings in `dashcam_config.txt`. If you so choose to adjust the rpicam-vid config file, results may vary.
-3. Find your flashdrive:  
+2. Setup a cron job that runs the `check_free_space.sh` once per minute:  
+The `check_free_space.sh` script is responsible for making sure there is enough space to save the next segment. If there is not enough space, it will delete the oldest segment until there is enough space. The segments are not dependant on each other to be played.
+WARNING: If your configured segment length is less than 60000, circular recording will not work and the recording will eventually run out of space.
+4. Run on boot:  
+So you can plug the Pi's power directly into your car. When the car turns on and starts providing power to the device it will boot and start recording on it's own. It will stop recording when the Pi loses power. Losing power will not damage the current recording given the default encoding settings in `dashcam_config.txt`. If you so choose to adjust the rpicam-vid config file, results may vary depending on intended functionality.
+5. Find your flashdrive:  
 On boot the script will search for any external block devices that have file systems. It will pick the largest of these to start recording to.
 WARNING: If the script cannot find a valid external block device via `lsblk`, it will not start recording.  
 WARNING: I do not recommend using the FAT32 filesystem as it's maximum file size limit of 4GB would not make for very good recording.
