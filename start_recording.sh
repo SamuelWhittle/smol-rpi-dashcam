@@ -4,6 +4,7 @@
 # assuming all that goes well, start recording a video to the mounted folder
 
 RUN_TIME="$(date '+%Y-%m-%d-%H-%M-%S')"
+RUNTIME_LOG_FILE="$PWD/logs/runtime.log"
 RECORDING_STORAGE_MOUNT_PATH="$PWD/recording_storage_mount"
 LARGEST_DEVICE=`lsblk -bnro SIZE,NAME,FSTYPE | grep -oP '(\d+)\s+(sd\w\d)\s+(\w+)' | grep -oP '(\d+)\s+(sd\w\d)' | sort -nr | head -n 1 | awk '{print $2}'`
 
@@ -13,10 +14,14 @@ mount_failed() {
 	test $MAYBE_MOUNT == 0
 }
 
+# reset log files
+echo "" > "$PWD"/logs/systemd.log
+echo "" > "$PWD"/logs/runtime.log
+echo "" > "$PWD"/logs/cron.log
+
 # stop if we did not find a block device
 if [ "$LARGEST_DEVICE" == "" ]; then
-	>&2 echo "Could not find a block device to store video to."
-	echo "$(date '+%Y-%m-%d %H:%M:%S') : Could not find a block device to store video to." > "$PWD/logs/run_logs.txt"
+	echo "$(date '+%Y-%m-%d %H:%M:%S') : Could not find a block device to store video to." >> "$RUNTIME_LOG_FILE"
 	exit 1
 fi
 
@@ -35,13 +40,12 @@ sudo mount $LARGEST_DEVICE_PATH $RECORDING_STORAGE_MOUNT_PATH
 
 # stop if the mount failed
 if mount_failed "$LARGEST_DEVICE_PATH" "$RECORDING_STORAGE_MOUNT_PATH"; then
-	>&2 echo "$(date '+%Y-%m-%d %H:%M:%S') : Could not mount $LARGEST_DEVICE_PATH to $RECORDING_STORAGE_MOUNT_PATH"
-	echo "$(date '+%Y-%m-%d %H:%M:%S') : Could not mount $LARGEST_DEVICE_PATH to $RECORDING_STORAGE_MOUNT_PATH" > "$PWD/logs/run_logs.txt"
+	echo "$(date '+%Y-%m-%d %H:%M:%S') : Could not mount $LARGEST_DEVICE_PATH to $RECORDING_STORAGE_MOUNT_PATH" >> "$RUNTIME_LOG_FILE"
 	exit 1
 fi
 
-echo "Successfully mounted $LARGEST_DEVICE_PATH to $RECORDING_STORAGE_MOUNT_PATH"
+echo "$(date '+%Y-%m-%d %H:%M:%S') : Successfully mounted $LARGEST_DEVICE_PATH to $RECORDING_STORAGE_MOUNT_PATH" >> "$RUNTIME_LOG_FILE" 
 
 # start recording video to device
-echo "Starting recording to $RECORDING_STORAGE_MOUNT_PATH/$RUN_TIME-chunk%04d.h264"
+echo "$(date '+%Y-%m-%d %H:%M:%S') : Starting recording to $RECORDING_STORAGE_MOUNT_PATH/$RUN_TIME-chunk%04d.h264" >> "$RUNTIME_LOG_FILE"
 rpicam-vid -c dashcam_config.txt -o recording_storage_mount/"${RUN_TIME}"-chunk%04d.h264

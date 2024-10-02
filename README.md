@@ -1,13 +1,6 @@
 # smol-rpi-dashcam
 Dashcam project designed to work on a Raspberry Pi with an accompanying Pi Camera Module and flash drive for storage.  
 If no valid external block device is found via `lsblk`, it will do nothing.  
-Google's recommended bitrate for 1920x1080 30fps is around 8Kbps, based on that bitrate here are some space usage results:  
-
-| Flashdrive Size | Maximum Recording Length @ 8Kbps |
-| --- | --- |
-| 32 Gb | ~1.1 Hours |
-| 64 Gb | ~2.2 Hours |
-| 128 Gb | ~4.4 Hours |
 
 ## Things You Will Need:
 1. Raspberry Pi
@@ -20,7 +13,9 @@ optional (recommended):
 1. Heatsink: The Pi Zero 2 W works well for 1080p30fps video but gets HOT
 
 ## What it Does
-1. Run on boot:  
+1. Setup a `systemctl` service called `dashcam`  
+The service just runs the `start_recording.sh` script and logs to `logs/systemd.log`
+2. Run on boot:  
 So you can plug the Pi's power directly into your car. When the car turns on and starts providing power to the device it will boot and start recording on it's own. It will stop recording when the Pi loses power. Losing power will not damage the current recording given the default encoding settings in `dashcam_config.txt`. If you so choose to adjust the rpicam-vid config file, results may vary.
 3. Find your flashdrive:  
 On boot the script will search for any external block devices that have file systems. It will pick the largest of these to start recording to.
@@ -39,6 +34,9 @@ WARNING: I do not recommend using the FAT32 filesystem as it's maximum file size
 ## Configuration
 This project is based on `rpicam-apps`. You can view their documentation here: [rpicam-apps docs](https://www.raspberrypi.com/documentation/computers/camera_software.html)
 
-Most `rpicam-apps` options you would want to change can be easily adjusted in `dashcam_config.txt` in the project root.
+Most `rpicam-apps` options you would want to change can be easily adjusted in `dashcam_config.txt` in the project root.  
+If you want to configure the segment length  
+e.g.: `segment=900000`  
+Make sure you use a value greater than 60000 (milliseconds), the cron job responsible for making sure there is enough space on your flashdrive runs once every 60 seconds.
 
 You can view your Pi Camera Modules Hardware specs here: [Pi Camera Module specs](https://www.raspberrypi.com/documentation/accessories/camera.html#hardware-specification)

@@ -1,1 +1,1 @@
-* * * * * root /path/to/working/dir/check_free_space.sh
+* * * * * root /path/to/working/dir/check_free_space.sh >> /path/to/working/dir/logs/cron.log 2>&1

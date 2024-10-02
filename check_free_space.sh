@@ -25,27 +25,22 @@ if test "$SEGMENT" = "" -o $NUM_FILES_IN_DIR -lt 2; then
 fi
 
 # get the free space in the partition
-FREE_SPACE=`df -B 1 --output=avail -k "$RECORDING_STORAGE_MOUNT_PATH" | tail -n 1`
+FREE_SPACE=$(( `df -B 1K --output=avail -k $RECORDING_STORAGE_MOUNT_PATH | tail -n 1` * 1024 ))
 
 # use the largest file size in the directory as the space threshold
-FREE_SPACE_THRESHOLD=`ls -lS | head -n 2 | tail -n 1 | awk '{print $5}'`
-
-# get the configure bitrate
-MAYBE_BITRATE=`cat "$RECORDING_STORAGE_MOUNT_PATH"/../dashcam_config.txt | grep bitrate | grep -oP '\d+'`
-
-# if there is a configured bitrate use that to calculate the threshold instead
-if test "$MAYBE_BITRATE" != ""; then
-	FREE_SPACE_THRESHOLD=$(( $MAYBE_BITRATE * $SEGMENT / 1000 ))
-fi
+SPACE_NEEDED=`ls -lS "$RECORDING_STORAGE_MOUNT_PATH" | head -n 2 | tail -n 1 | awk '{print $5}'`
 
 # if there is more than enough free space, exit
-if test $FREE_SPACE_THRESHOLD -lt $FREE_SPACE; then
+if test $SPACE_NEEDED -lt $FREE_SPACE; then
+	echo "free space $FREE_SPACE, exceeds space needed $SPACE_NEEDED"
 	exit 0
 fi
 
 # delete the oldest file until there is enough space or only 1 file left
-while test $FREE_SPACE -lt $FREE_SPACE_THRESHOLD -a $NUM_FILES_IN_DIR -gt 1; do
-	sudo rm "$RECORDING_STORAGE_MOUNT_PATH"/`ls -t | tail -n 1`
+while test $FREE_SPACE -lt $SPACE_NEEDED -a $NUM_FILES_IN_DIR -gt 1; do
+	echo "space needed $SPACE_NEEDED, exceeds free space $FREE_SPACE"
+	echo "deleting $RECORDING_STORAGE_MOUNT_PATH/`ls -t $RECORDING_STORAGE_MOUNT_PATH | tail -n 1`"
+	sudo rm "$RECORDING_STORAGE_MOUNT_PATH/`ls -t "$RECORDING_STORAGE_MOUNT_PATH" | tail -n 1`"
 	NUM_FILES_IN_DIR=`ls $RECORDING_STORAGE_MOUNT_PATH | wc -l`
-	FREE_SPACE=`df -B 1 --output=avail -k "$RECORDING_STORAGE_MOUNT_PATH" | tail -n 1`
+	FREE_SPACE=$(( `df -B 1K --output=avail -k $RECORDING_STORAGE_MOUNT_PATH | tail -n 1` * 1024 ))
 done
