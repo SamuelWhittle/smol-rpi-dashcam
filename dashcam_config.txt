@@ -6,5 +6,5 @@ framerate=30
 bitrate=10000000
 profile=high
 level=4.2
-segment=90000
+segment=900000
 inline=
