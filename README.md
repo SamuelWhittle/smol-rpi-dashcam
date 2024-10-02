@@ -1,6 +1,5 @@
 # smol-rpi-dashcam
 Dashcam project designed to work on a Raspberry Pi with an accompanying Pi Camera Module and flash drive for storage.  
-If no valid external block device is found via `lsblk`, it will do nothing.  
 
 ## Things You Will Need:
 1. Raspberry Pi
@@ -35,8 +34,15 @@ WARNING: I do not recommend using the FAT32 filesystem as it's maximum file size
 This project is based on `rpicam-apps`. You can view their documentation here: [rpicam-apps docs](https://www.raspberrypi.com/documentation/computers/camera_software.html)
 
 Most `rpicam-apps` options you would want to change can be easily adjusted in `dashcam_config.txt` in the project root.  
-If you want to configure the segment length  
-e.g.: `segment=900000`  
-Make sure you use a value greater than 60000 (milliseconds), the cron job responsible for making sure there is enough space on your flashdrive runs once every 60 seconds.
 
 You can view your Pi Camera Modules Hardware specs here: [Pi Camera Module specs](https://www.raspberrypi.com/documentation/accessories/camera.html#hardware-specification)
+
+## Troubleshooting
+### It doesn't do anything:
+Make sure you have an external block device plugged into the Pi with at least one partition containing a valid File System, e.g.: exFat  
+If there is no detectable and valid external block device, the dashcam service will exit, doing nothing.
+
+### The service crashes due to running out of space:
+Make sure that the configured segment value is larger than `60000`  
+e.g.: `segment=900000`  for 15 minutes
+The cron job responsible for making sure there is enough space on your flashdrive runs once every 60 seconds.
