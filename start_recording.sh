@@ -24,6 +24,9 @@ fi
 LARGEST_DEVICE_PATH="/dev/$LARGEST_DEVICE"
 echo "Found device $LARGEST_DEVICE_PATH"
 
+# disable write caching for the largest device
+sudo hdparm -W 0 $LARGEST_DEVICE_PATH
+
 # ensure the device is not mounted
 sudo umount $LARGEST_DEVICE_PATH
 
