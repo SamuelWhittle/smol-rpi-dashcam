@@ -36,7 +36,7 @@ sudo hdparm -W 0 $LARGEST_DEVICE_PATH
 sudo umount $LARGEST_DEVICE_PATH
 
 # mount largest block device
-sudo mount $LARGEST_DEVICE_PATH $RECORDING_STORAGE_MOUNT_PATH
+sudo mount -o sync $LARGEST_DEVICE_PATH $RECORDING_STORAGE_MOUNT_PATH
 
 # stop if the mount failed
 if mount_failed "$LARGEST_DEVICE_PATH" "$RECORDING_STORAGE_MOUNT_PATH"; then
